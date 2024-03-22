@@ -1,6 +1,9 @@
 # Compiled class file
 *.class
 
+#Documentation folder generated from javadoc
+documentation
+
 #Binary file
 bin/
 
