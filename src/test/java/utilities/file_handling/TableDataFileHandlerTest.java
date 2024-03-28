@@ -22,28 +22,37 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import src.main.java.utilities.file_handling.TableDataFileHandler;
-
+/**
+ * Unit tests for {@link TableDataFileHandler}.
+ */
 @Execution(ExecutionMode.SAME_THREAD)
 public class TableDataFileHandlerTest {
-	
-	
-	private TableDataFileHandler fileHandler;
-	private TestFilePaths testFilePath;
-	
-	@BeforeEach
-	public void initializeCommonVariables() {
-    	// Create TableDataFileHandler instance
-		this.fileHandler = new TableDataFileHandler(TestFilePaths.getTestFilePath());
-		this.testFilePath = new TestFilePaths();
-	}
-	
-	@TestFactory
-	public Stream<DynamicTest> testReadFile() throws Exception {
+    
+    private TableDataFileHandler fileHandler;
+    private TestFilePaths testFilePath;
+    
+    @BeforeEach
+    public void initializeCommonVariables() {
+        // Create TableDataFileHandler instance
+        this.fileHandler = new TableDataFileHandler(TestFilePaths.getTestFilePath());
+        this.testFilePath = new TestFilePaths();
+    }
+    
+    /**
+     * Tests the reading of records from a file.
+     * 
+     * <p>Complexity: O((n^2)*m)</p>
+     * 
+     * @return Stream<DynamicTest>
+     * @throws Exception if an error occurs during the test
+     */
+    @TestFactory
+    public Stream<DynamicTest> testReadFile() throws Exception {
         List<String[]> records = readRecordsFromFile();
         return records.stream().map(record -> DynamicTest.dynamicTest(
                 "Read record: " + record[0],
                 () -> {
-                	String[] fileRecord = fileHandler.searchFileForValue(record[0], "ID");
+                    String[] fileRecord = fileHandler.searchFileForValue(record[0], "ID", Optional.ofNullable(null));
                     assertNotNull(fileRecord, "Record should not be null");
                     assertEquals(record[1], fileRecord[1], "Name should match");
                     assertEquals(record[2], fileRecord[2], "Age should match");
@@ -51,27 +60,36 @@ public class TableDataFileHandlerTest {
                 }));
     }
     
+    /**
+     * Tests the case where reading a file fails to find the specified record.
+     * 
+     * @throws Exception if an error occurs during the test
+     */
     @Test
     @Order(2)
     public void testFailReadFile() throws Exception {
-    	String[] record1 = fileHandler.searchFileForValue("nonExistentValue", "searchColumn");
-    	String[] record2 = fileHandler.searchFileForValue("nonExistentValue", "ID");
+        String[] record1 = fileHandler.searchFileForValue("nonExistentValue", "searchColumn", Optional.ofNullable(null));
+        String[] record2 = fileHandler.searchFileForValue("nonExistentValue", "ID", Optional.ofNullable(null));
         assertNull(record1);
         assertNull(record2);
     }
 
+    /**
+     * Tests writing a record to a file.
+     * 
+     * @throws Exception if an error occurs during the test
+     */
     @Test
     @Order(3)
-    public void
-    testWriteFile() throws Exception{
-    	String testWriteFile = "testWriteFile.dat";
+    public void testWriteFile() throws Exception {
+        String testWriteFile = "testWriteFile.dat";
         String recordToWrite = "NewRecord,NewName,30,new@example.com";
         // Write a new record to the file
         fileHandler.writeFile(recordToWrite, Optional.ofNullable(TestFilePaths.getResourceFilePath(testWriteFile)));
 
         // Read the file to verify if the record was written
         try (BufferedReader reader = new BufferedReader(new FileReader(TestFilePaths.getResourceFilePath(testWriteFile)))) {
-        	String line;
+            String line;
             boolean recordFound = false;
             while ((line = reader.readLine()) != null) {
                 if (line.equals(recordToWrite)) {
@@ -83,6 +101,14 @@ public class TableDataFileHandlerTest {
         }
     }
 
+    /**
+     * Reads records from the specified file.
+     * 
+     * <p>Complexity: O(n)</p>
+     * 
+     * @return List<String[]> a list of records read from the file
+     * @throws IOException if an I/O error occurs during file reading
+     */
     private List<String[]> readRecordsFromFile() throws IOException {
         List<String[]> records = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(TestFilePaths.getTestFilePath()))) {

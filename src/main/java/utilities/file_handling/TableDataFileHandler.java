@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class TableDataFileHandler implements FileHandler
@@ -22,12 +23,13 @@ public class TableDataFileHandler implements FileHandler
 	
     /**
      * <p>Reads the specified file and returns the output</p>
+     * <p>O(n)</p>
      */
     @Override
-    public String[] searchFileForValue(String searchValue, String searchColumn) throws IOException {
+    public String[] searchFileForValue(String searchValue, String searchColumn, Optional<String> filePath) throws IOException {
     	int searchColumnIndex = -1;
         boolean firstLineSkipped = false;
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath.orElse(this.filePath)))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 if (!firstLineSkipped) {
@@ -88,6 +90,13 @@ public class TableDataFileHandler implements FileHandler
 	public void createFile(String tableName)
 	{
 		
+	}
+
+	@Override
+	public ArrayList<String> readEntireFile(Optional<String> filePath)
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
