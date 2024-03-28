@@ -24,7 +24,7 @@ public class TableDataFileHandler implements FileHandler
      * <p>Reads the specified file and returns the output</p>
      */
     @Override
-    public String[] readFile(String searchValue, String searchColumn) throws IOException {
+    public String[] searchFileForValue(String searchValue, String searchColumn) throws IOException {
     	int searchColumnIndex = -1;
         boolean firstLineSkipped = false;
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {

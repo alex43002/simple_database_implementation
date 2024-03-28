@@ -43,7 +43,7 @@ public class TableDataFileHandlerTest {
         return records.stream().map(record -> DynamicTest.dynamicTest(
                 "Read record: " + record[0],
                 () -> {
-                	String[] fileRecord = fileHandler.readFile(record[0], "ID");
+                	String[] fileRecord = fileHandler.searchFileForValue(record[0], "ID");
                     assertNotNull(fileRecord, "Record should not be null");
                     assertEquals(record[1], fileRecord[1], "Name should match");
                     assertEquals(record[2], fileRecord[2], "Age should match");
@@ -54,8 +54,8 @@ public class TableDataFileHandlerTest {
     @Test
     @Order(2)
     public void testFailReadFile() throws Exception {
-    	String[] record1 = fileHandler.readFile("nonExistentValue", "searchColumn");
-    	String[] record2 = fileHandler.readFile("nonExistentValue", "ID");
+    	String[] record1 = fileHandler.searchFileForValue("nonExistentValue", "searchColumn");
+    	String[] record2 = fileHandler.searchFileForValue("nonExistentValue", "ID");
         assertNull(record1);
         assertNull(record2);
     }
