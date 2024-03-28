@@ -1,6 +1,6 @@
 package src.test.java.utilities.file_handling;
 
-public class FilePaths
+public class TestFilePaths
 {
 	// Define constants for file paths
     public static final String TEST_FILE_PATH = "testfile.dat";
@@ -9,7 +9,7 @@ public class FilePaths
     /**
      * <p>Empty Constructor</p>
      */
-    public FilePaths() {}
+    public TestFilePaths() {}
     
     // Static method to get the full path of a file in the resources directory
     public static String getTestFilePath() {

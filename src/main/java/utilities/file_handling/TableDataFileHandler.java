@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Optional;
 
 public class TableDataFileHandler implements FileHandler
 {
@@ -62,16 +63,13 @@ public class TableDataFileHandler implements FileHandler
 	 * Write new record to file
 	 */
 	@Override
-	public boolean writeFile(String record) throws Exception
+	public boolean writeFile(String record, Optional<String> filePath) throws Exception
 	{
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
-            writer.write(record);
-            writer.newLine();
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new Exception("Error writing to file.");
-        }
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath.orElse(this.filePath), true))) {
+	        writer.write(record);
+	        writer.newLine();
+	        return true;
+	    }
 	}
 
 	/**
