@@ -48,11 +48,12 @@ public class TableDataFileHandlerTest {
      */
     @TestFactory
     public Stream<DynamicTest> testReadFile() throws Exception {
+    	String testReadFile = "testReadFile.dat";
         List<String[]> records = readRecordsFromFile();
         return records.stream().map(record -> DynamicTest.dynamicTest(
                 "Read record: " + record[0],
                 () -> {
-                    String[] fileRecord = fileHandler.searchFileForValue(record[0], "ID", Optional.ofNullable(null));
+                    String[] fileRecord = fileHandler.searchFileForValue(record[0], "ID", Optional.ofNullable(TestFilePaths.getResourceFilePath(testReadFile)));
                     assertNotNull(fileRecord, "Record should not be null");
                     assertEquals(record[1], fileRecord[1], "Name should match");
                     assertEquals(record[2], fileRecord[2], "Age should match");
@@ -68,8 +69,9 @@ public class TableDataFileHandlerTest {
     @Test
     @Order(2)
     public void testFailReadFile() throws Exception {
-        String[] record1 = fileHandler.searchFileForValue("nonExistentValue", "searchColumn", Optional.ofNullable(null));
-        String[] record2 = fileHandler.searchFileForValue("nonExistentValue", "ID", Optional.ofNullable(null));
+    	String testReadFile = "testReadFile.dat";
+        String[] record1 = fileHandler.searchFileForValue("nonExistentValue", "searchColumn", Optional.ofNullable(TestFilePaths.getResourceFilePath(testReadFile)));
+        String[] record2 = fileHandler.searchFileForValue("nonExistentValue", "ID", Optional.ofNullable(TestFilePaths.getResourceFilePath(testReadFile)));
         assertNull(record1);
         assertNull(record2);
     }
@@ -100,6 +102,16 @@ public class TableDataFileHandlerTest {
             assertTrue(recordFound, "Record should have been written to the file");
         }
     }
+    
+    /**
+     * 
+     * @throws Exception
+     */
+    @Test
+    @Order(4)
+    public void speedReadTest() throws Exception {
+    	
+    }
 
     /**
      * Reads records from the specified file.
@@ -110,8 +122,9 @@ public class TableDataFileHandlerTest {
      * @throws IOException if an I/O error occurs during file reading
      */
     private List<String[]> readRecordsFromFile() throws IOException {
+    	String testReadFile = "testReadFile.dat";
         List<String[]> records = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(TestFilePaths.getTestFilePath()))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(TestFilePaths.getResourceFilePath(testReadFile)))) {
             String line;
             // Skip the header line
             reader.readLine();
